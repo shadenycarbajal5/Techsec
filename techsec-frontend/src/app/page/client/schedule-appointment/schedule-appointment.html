@@ -1,0 +1,111 @@
+<!-- src/app/page/client/schedule-appointment/schedule-appointment.html -->
+<div class="crumbs">Inicio &gt; Agendar Servicio</div>
+<h2 class="text-2xl font-extrabold mb-1" style="color:var(--text)">Agendar Cita de Servicio</h2>
+<p class="text-sm mb-6" style="color:var(--muted)">Elige el servicio, la fecha y el horario que mejor se adapten a ti.</p>
+
+<div class="form-grid">
+  <form (ngSubmit)="submit()">
+
+    <label class="field-label" style="display:block;font-size:11px;letter-spacing:.6px;font-weight:700;color:#6b6656;margin:0 0 10px;">TIPO DE SERVICIO *</label>
+    <div class="service-grid">
+      @for (service of services; track service.name) {
+        <button type="button" class="service-opt" [class.selected]="selectedService()?.name === service.name" (click)="selectService(service)">
+          {{ service.name }}
+        </button>
+      }
+    </div>
+
+    <label class="field-label" style="display:block;font-size:11px;letter-spacing:.6px;font-weight:700;color:#6b6656;margin:20px 0 10px;">FECHA Y HORARIO *</label>
+    <div class="cal-grid">
+      <div class="cal-panel">
+        <div class="cal-header">
+          <div class="cal-month">{{ monthLabel() }}</div>
+          <div class="cal-nav">
+            <button type="button" class="cal-nav-btn" [disabled]="!canGoPrevMonth()" (click)="changeMonth(-1)">‹</button>
+            <button type="button" class="cal-nav-btn" (click)="changeMonth(1)">›</button>
+          </div>
+        </div>
+        <div class="cal-weekdays">
+          @for (w of weekdays; track w) { <span>{{ w }}</span> }
+        </div>
+        <div class="cal-days">
+          @for (cell of calDays(); track $index) {
+            @if (!cell) {
+              <div class="cal-day empty"></div>
+            } @else {
+              <div class="cal-day" [class.closed]="!cell.open" [class.available]="cell.open" [class.selected]="isSelected(cell.date)" (click)="selectDay(cell)">
+                {{ cell.day }}
+              </div>
+            }
+          }
+        </div>
+        <div class="cal-legend">
+          <span><i class="dot-outline"></i> Disponible</span>
+          <span><i class="dot-filled"></i> Seleccionado</span>
+        </div>
+      </div>
+
+      <div class="cal-panel">
+        <div class="cal-slots-title">Horario disponible</div>
+        @if (!selectedDate()) {
+          <div class="cal-slots-date">Selecciona un día disponible</div>
+        } @else {
+          <div class="cal-slots-date">{{ formattedSelectedDate() }}</div>
+          @if (loadingAvailability()) {
+            <div class="cal-empty-msg"><i class="pi pi-spin pi-spinner mr-2"></i>Consultando disponibilidad...</div>
+          } @else if (availabilityChecked()) {
+            @if (!mananaDisponible() && !tardeDisponible()) {
+              <div class="cal-empty-msg">No hay bloques disponibles para este día. Elige otra fecha.</div>
+            } @else {
+              <div class="slot-block-label">Bloques</div>
+              <div class="slot-grid">
+                <button type="button" class="slot-btn" [class.selected]="selectedBlock() === 'MANANA'" [class.disabled]="!mananaDisponible()" [disabled]="!mananaDisponible()" (click)="selectBlock('MANANA')">
+                  Mañana<br><span style="font-size:11px;opacity:.7">8:00 am – 12:00 pm</span>
+                </button>
+                <button type="button" class="slot-btn" [class.selected]="selectedBlock() === 'TARDE'" [class.disabled]="!tardeDisponible()" [disabled]="!tardeDisponible()" (click)="selectBlock('TARDE')">
+                  Tarde<br><span style="font-size:11px;opacity:.7">1:00 pm – 6:00 pm</span>
+                </button>
+              </div>
+            }
+          }
+        }
+      </div>
+    </div>
+
+    <label class="field-label" style="display:block;font-size:11px;letter-spacing:.6px;font-weight:700;color:#6b6656;margin:20px 0 10px;">LUGAR DEL SERVICIO *</label>
+    <div class="block-grid">
+      <button type="button" class="block-opt" [class.selected]="selectedLocation() === 'establecimiento'" (click)="selectLocation('establecimiento')">🏢 En el establecimiento</button>
+      <button type="button" class="block-opt" [class.selected]="selectedLocation() === 'otra'" (click)="selectLocation('otra')">📍 Otra dirección</button>
+    </div>
+
+    @if (selectedLocation() === 'establecimiento') {
+      <div class="panel" style="margin-top:10px;">📍 El servicio se realizará en nuestro local:<br><b>{{ storeAddress }}</b></div>
+    } @else {
+      <label class="field-label" style="display:block;font-size:11px;letter-spacing:.6px;font-weight:700;color:#6b6656;margin:14px 0 6px;">DIRECCIÓN DEL SERVICIO *</label>
+      <input type="text" [ngModel]="address()" (ngModelChange)="address.set($event)" name="address" placeholder="Av. Ejemplo 123, Piso 2, Lima"
+             style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:9px;font-size:14px;background:#fff;color:var(--text);">
+    }
+
+    <label class="field-label" style="display:block;font-size:11px;letter-spacing:.6px;font-weight:700;color:#6b6656;margin:16px 0 6px;">DESCRIPCIÓN (OPCIONAL)</label>
+    <textarea [ngModel]="description()" (ngModelChange)="description.set($event)" name="description" rows="3" placeholder="Cuéntanos brevemente qué necesitas"
+              style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:9px;font-size:14px;background:#fff;color:var(--text);"></textarea>
+
+    <button type="submit" [disabled]="sending()" class="w-full font-semibold rounded-lg mt-4 py-3.5 disabled:opacity-50" style="background:var(--gold);color:#241c05;border:none;">
+      {{ sending() ? 'Enviando...' : 'Confirmar cita' }}
+    </button>
+  </form>
+
+  <div class="side-panel">
+    <div style="display:flex;align-items:center;gap:6px;font-weight:700;color:var(--text)"><i class="pi pi-clock"></i> Horarios de atención</div>
+    <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px;"><span>Lunes – Viernes</span><span>8am – 6pm</span></div>
+    <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px;"><span>Sábados</span><span>8am – 1pm</span></div>
+    <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:13.5px;"><span>Domingos</span><span style="color:var(--muted)">Cerrado</span></div>
+    <div class="dark-block">
+      <div class="lbl">BLOQUE MAÑANA</div>
+      <div style="margin:4px 0 12px;">8:00 am – 12:00 pm</div>
+      <div class="lbl">BLOQUE TARDE</div>
+      <div style="margin:4px 0 12px;">1:00 pm – 6:00 pm</div>
+      <div style="font-size:11.5px;color:#a49f8f;">Los bloques están sujetos a disponibilidad. Te confirmaremos el horario exacto.</div>
+    </div>
+  </div>
+</div>

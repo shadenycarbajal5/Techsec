@@ -1,0 +1,128 @@
+<!-- src/app/page/client/catalog/catalog.html -->
+<div class="flex flex-col gap-6">
+
+  <div class="relative rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 overflow-hidden"
+       style="background: linear-gradient(to right, rgba(201,154,62,0.12), transparent); border: 1px solid var(--line);">
+    <div class="flex flex-col gap-1.5 relative z-10">
+      <h1 class="text-3xl font-extrabold tracking-wide" style="color:var(--gold-dark)">Catálogo de Equipos</h1>
+      <p class="max-w-xl text-sm" style="color:var(--muted)">Explora nuestra selección de equipos de videovigilancia, materiales eléctricos y accesorios. Agrega productos al carrito para solicitar una cotización formal o agendar una instalación.</p>
+    </div>
+    <div class="relative z-10 hidden sm:block"><i class="pi pi-box text-8xl" style="color:rgba(201,154,62,0.12)"></i></div>
+  </div>
+
+  <div class="card p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="flex flex-wrap items-center gap-2">
+      @for (cat of categories; track cat) {
+        <button
+          (click)="selectCategory(cat)"
+          [class]="selectedCategory() === cat ? 'chip active' : 'chip'"
+        >
+          {{ cat }}
+        </button>
+      }
+    </div>
+
+    <div class="relative w-full md:w-80">
+      <i class="pi pi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-sm" style="color:var(--muted)"></i>
+      <input
+        type="text"
+        pInputText
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+        placeholder="Buscar cámaras, tableros, cables..."
+        class="w-full bg-white pl-10 py-2 rounded-lg text-sm"
+        style="border: 1px solid var(--line); color: var(--text)"
+      />
+    </div>
+  </div>
+
+  @if (loading()) {
+    <div class="flex flex-col items-center justify-center p-12 gap-3" style="color:var(--muted)">
+      <i class="pi pi-spin pi-spinner text-3xl" style="color:var(--gold)"></i>
+      <p class="text-sm">Cargando catálogo de productos...</p>
+    </div>
+  } @else {
+    @if (filteredProducts().length === 0) {
+      <div class="card flex flex-col items-center justify-center p-12 text-center gap-4">
+        <i class="pi pi-search-minus text-5xl" style="color:var(--line)"></i>
+        <div>
+          <h3 class="text-lg font-bold" style="color:var(--text)">No se encontraron productos</h3>
+          <p class="text-sm mt-1" style="color:var(--muted)">Prueba cambiando tu término de búsqueda o categoría.</p>
+        </div>
+        <button
+          pButton
+          (click)="searchQuery.set(''); selectedCategory.set('TODOS')"
+          class="px-4 py-2 rounded-lg text-xs font-bold uppercase"
+          style="background: rgba(201,154,62,0.1); color: var(--gold-dark); border: 1px solid rgba(201,154,62,0.3)"
+        >
+          Limpiar filtros
+        </button>
+      </div>
+    } @else {
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        @for (product of filteredProducts(); track product.id) {
+          <div class="product-card flex flex-col shadow-sm hover:-translate-y-1 transition duration-300 group">
+
+            <div class="relative h-44 overflow-hidden flex items-center justify-center" style="background:#f4f2ec; border-bottom: 1px solid var(--line)">
+              @if (product.imageUrl) {
+                <img [src]="product.imageUrl" [alt]="product.name" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+              } @else {
+                <i class="pi pi-image text-4xl" style="color:#c7c3b6"></i>
+              }
+              <span class="absolute top-3 left-3 text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full"
+                    style="background: rgba(201,154,62,0.12); border: 1px solid rgba(201,154,62,0.3); color: var(--gold-dark)">
+                {{ product.category?.name }}
+              </span>
+            </div>
+
+            <div class="p-5 flex flex-col flex-1 gap-2.5">
+              <div>
+                <h3 class="font-bold line-clamp-1" style="color:var(--text)" [title]="product.name">{{ product.name }}</h3>
+                <p class="text-xs mt-0.5 font-medium" style="color:var(--muted)">Ref: #00{{ product.id }}</p>
+              </div>
+
+              <p class="text-xs line-clamp-2 leading-relaxed flex-1" style="color:var(--muted)">{{ product.description }}</p>
+
+              @if (product.specifications) {
+                <div class="p-2 rounded text-[10px] font-mono line-clamp-1" style="background:#faf9f5; border: 1px solid var(--line); color: var(--muted)">
+                  {{ product.specifications }}
+                </div>
+              }
+
+              <div class="flex items-center justify-between pt-3 mt-1" style="border-top: 1px solid var(--line)">
+                <div class="flex flex-col">
+                  <span class="text-[10px] uppercase font-semibold" style="color:var(--muted)">Precio</span>
+                  <span class="text-lg font-extrabold" style="color:var(--gold-dark)">S/ {{ product.price.toFixed(2) }}</span>
+                </div>
+                <div class="text-right flex flex-col">
+                  <span class="text-[10px] uppercase font-semibold" style="color:var(--muted)">Disponibilidad</span>
+                  @if (product.stock <= 0) {
+                    <span class="text-xs font-bold uppercase tracking-wide" style="color:var(--red-text)">Agotado</span>
+                  } @else if (product.stock <= product.minStockAlert) {
+                    <span class="text-xs font-bold uppercase tracking-wide" style="color:var(--amber-text)">Stock Bajo ({{ product.stock }})</span>
+                  } @else {
+                    <span class="text-xs font-semibold uppercase tracking-wide" style="color:var(--green-text)">En Stock ({{ product.stock }})</span>
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div class="px-5 pb-5">
+              <button
+                pButton
+                (click)="addToCart(product)"
+                [disabled]="product.stock <= 0"
+                class="w-full font-bold py-2.5 rounded-lg border-none flex justify-center gap-2 text-xs uppercase tracking-wider"
+                [class]="product.stock <= 0 ? 'bg-gray-300 cursor-not-allowed text-gray-500' : ''"
+                [style]="product.stock > 0 ? 'background:var(--gold); color:#241c05' : ''"
+              >
+                <i class="pi pi-shopping-cart text-xs"></i>
+                <span>Agregar a Cotización</span>
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

@@ -1,0 +1,33 @@
+<!-- src/app/page/client/my-appointments/my-appointments.html -->
+<section class="max-w-5xl mx-auto space-y-6">
+  <div class="flex justify-between items-center">
+    <h1 class="text-2xl font-extrabold" style="color:var(--text)">Mis Citas de Servicio</h1>
+    <a routerLink="/client/schedule-appointment" class="rounded-lg px-4 py-2.5 text-sm font-bold" style="background:var(--gold); color:#241c05">+ Nueva cita</a>
+  </div>
+
+  @if (loading()) {
+    <p style="color:var(--muted)">Cargando...</p>
+  } @else if (!appointments().length) {
+    <div class="card p-10 text-center" style="color:var(--muted)">No tienes citas registradas.</div>
+  } @else {
+    <div class="space-y-4">
+      @for (a of appointments(); track a.id) {
+        <div class="panel">
+          <div class="flex justify-between items-center">
+            <b style="color:var(--text)">{{ a.serviceType }}</b>
+            <span class="pill"
+                  [class.pill-green]="a.currentStatus === 'COMPLETADO'"
+                  [class.pill-amber]="a.currentStatus === 'TECNICO_EN_RUTA' || a.currentStatus === 'EN_PROGRESO'"
+                  [class.pill-blue]="a.currentStatus === 'RECIBIDO' || a.currentStatus === 'EN_DIAGNOSTICO'">
+              {{ statusLabel[a.currentStatus] }}
+            </span>
+          </div>
+          <div class="text-xs mt-1 mb-3" style="color:var(--muted)">
+            {{ a.date | date:'dd/MM/yyyy' }} · {{ a.timeSlot === 'MANANA' ? 'Mañana' : 'Tarde' }} · 👤 {{ a.technician?.name || 'Por asignar' }}
+          </div>
+          <div class="text-xs" style="color:var(--muted)">📍 {{ a.serviceAddress }}</div>
+        </div>
+      }
+    </div>
+  }
+</section>

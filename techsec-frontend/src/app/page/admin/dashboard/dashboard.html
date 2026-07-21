@@ -1,0 +1,66 @@
+<!-- src/app/page/admin/dashboard/dashboard.html -->
+<section class="max-w-7xl mx-auto space-y-6">
+  <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+    <div>
+      <p class="text-xs font-bold tracking-[.2em] uppercase" style="color:var(--gold-dark)">Resumen operativo</p>
+      <h1 class="mt-2 text-3xl font-extrabold" style="color:var(--text)">Panel de administración</h1>
+    </div>
+    <a routerLink="/admin/product/product-insert" class="rounded-lg px-4 py-3 text-sm font-bold" style="background:var(--gold); color:#241c05">
+      <i class="pi pi-plus mr-2"></i>Nuevo producto
+    </a>
+  </div>
+
+  @if (loading()) {
+    <p style="color:var(--muted)">Cargando métricas...</p>
+  } @else {
+    <div class="kpi-grid grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      @for (metric of metrics(); track metric.label) {
+        <article class="kpi-card">
+          <div class="flex justify-between items-start">
+            <span class="kpi-icon"><i class="pi {{ metric.icon }}"></i></span>
+            <span class="kpi-delta" [class.down]="!metric.positive">{{ metric.change }}</span>
+          </div>
+          <p class="kpi-value">{{ metric.value }}</p>
+          <p class="kpi-label">{{ metric.label }}</p>
+        </article>
+      }
+    </div>
+
+    <div class="grid xl:grid-cols-[1.45fr_1fr] gap-6">
+      <article class="panel">
+        <div class="flex justify-between items-center">
+          <h2 class="font-bold" style="color:var(--text)">Inventario con stock mínimo</h2>
+          <a routerLink="/admin/product/product-list" class="text-xs font-bold" style="color:var(--gold-dark)">Ver inventario</a>
+        </div>
+        <div class="mt-4 divide-y" style="border-color: var(--line)">
+          @if (!lowStockProducts().length) {
+            <p class="text-sm py-4" style="color:var(--muted)">Sin alertas de stock.</p>
+          }
+          @for (p of lowStockProducts(); track p.name) {
+            <div class="flex justify-between py-3 text-sm">
+              <span style="color:var(--text)">{{ p.name }}</span>
+              <span class="font-bold" style="color:var(--amber-text)">{{ p.stock }} unid.</span>
+            </div>
+          }
+        </div>
+      </article>
+
+      <article class="panel">
+        <h2 class="font-bold" style="color:var(--text)">Atención de hoy</h2>
+        <div class="mt-4 space-y-3">
+          @if (!todayAppointments().length) {
+            <p class="text-sm" style="color:var(--muted)">No hay citas programadas para hoy.</p>
+          }
+          @for (a of todayAppointments(); track a.id) {
+            <div class="rounded-lg p-3.5" style="border: 1px solid var(--line); background: #faf9f5">
+              <div class="flex justify-between"><span class="font-bold" style="color:var(--gold-dark)">{{ a.timeSlot === 'MANANA' ? 'Mañana' : 'Tarde' }}</span><span class="text-xs" style="color:var(--muted)">{{ a.currentStatus }}</span></div>
+              <p class="mt-2 text-sm font-semibold" style="color:var(--text)">{{ a.serviceType }}</p>
+              <p class="mt-1 text-xs" style="color:var(--muted)">{{ a.client?.name }} · {{ a.technician?.name || 'Por asignar' }}</p>
+            </div>
+          }
+        </div>
+        <a routerLink="/admin/appointment-agenda" class="mt-4 block rounded-lg py-2.5 text-center text-xs font-bold" style="border: 1px solid var(--gold); color: var(--gold-dark)">Gestionar agenda</a>
+      </article>
+    </div>
+  }
+</section>

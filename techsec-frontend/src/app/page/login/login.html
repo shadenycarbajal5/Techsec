@@ -1,0 +1,77 @@
+<!-- src/app/page/login/login.html -->
+<div class="flex min-h-screen w-full">
+  <!-- Hero lateral (oculto en mobile) -->
+  <div class="hidden md:flex flex-1 flex-col justify-between p-14"
+       style="background: radial-gradient(circle at 20% 20%, #23200f 0%, #0f0d0a 70%); color: #eae6db;">
+    <div>
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 border border-[var(--gold)] rounded-lg flex items-center justify-center text-[var(--gold)]"><i class="pi pi-shield"></i></div>
+        <div>
+          <div class="font-bold tracking-wider text-lg">TECHSEC</div>
+          <div class="text-[10px] tracking-[2px] text-[var(--gold)] font-semibold">SYSTEMS &amp; SECURITY</div>
+        </div>
+      </div>
+      <h1 class="text-4xl font-extrabold leading-tight mt-12 mb-4">Tu plataforma<br><span class="text-[var(--gold)]">técnica integral</span></h1>
+      <p class="text-[#b9b3a3] max-w-md leading-6 text-[15px]">Gestiona cotizaciones, pedidos y citas de servicio desde un solo lugar. Equipos eléctricos, cámaras de seguridad y soporte técnico especializado.</p>
+      <div class="flex gap-4 mt-9">
+        <div class="w-20 text-center text-[#cfc9ba] text-xs">
+          <div class="w-13 h-13 border border-[#3a3527] rounded-xl flex items-center justify-center mb-2 text-xl text-[var(--gold)]" style="width:52px;height:52px">📷</div>Cámaras
+        </div>
+        <div class="w-20 text-center text-[#cfc9ba] text-xs">
+          <div class="w-13 h-13 border border-[#3a3527] rounded-xl flex items-center justify-center mb-2 text-xl text-[var(--gold)]" style="width:52px;height:52px">⚡</div>Eléctricos
+        </div>
+        <div class="w-20 text-center text-[#cfc9ba] text-xs">
+          <div class="w-13 h-13 border border-[#3a3527] rounded-xl flex items-center justify-center mb-2 text-xl text-[var(--gold)]" style="width:52px;height:52px">🔧</div>Soporte
+        </div>
+      </div>
+    </div>
+    <div class="text-[#6d6858] text-xs">© 2026 TechSec Systems. Todos los derechos reservados.</div>
+  </div>
+
+  <!-- Panel de login -->
+  <div class="flex-1 flex items-center justify-center p-8 bg-[var(--cream)]">
+    <div class="w-full max-w-md">
+      <h1 class="text-3xl font-extrabold text-[var(--text)] mb-1">Iniciar sesión</h1>
+      <p class="text-[var(--muted)] text-sm mb-6">Accede a tu cuenta para continuar</p>
+
+      <div class="flex bg-[var(--line)] rounded-[10px] p-1 mb-6">
+        <button (click)="activeTab.set('login')" [class]="activeTab() === 'login' ? 'bg-[var(--ink)] text-white' : 'text-[var(--muted)]'" class="flex-1 border-none py-2.5 rounded-lg font-semibold text-sm">Iniciar sesión</button>
+        <button (click)="activeTab.set('register')" class="flex-1 border-none bg-transparent py-2.5 rounded-lg font-semibold text-sm text-[var(--muted)]">Registrarse</button>
+      </div>
+
+      @if (activeTab() === 'register') {
+        <div class="rounded-xl border border-[var(--line)] bg-white p-5 text-sm text-[var(--muted)]">
+          El registro de nuevos clientes estará disponible próximamente.
+        </div>
+      } @else {
+        <form (ngSubmit)="onSubmit()" class="flex flex-col">
+          <label class="block text-[11px] font-bold tracking-wide text-[#6b6656] uppercase mt-3 mb-1.5">Correo electrónico</label>
+          <input type="email" [ngModel]="username()" (ngModelChange)="username.set($event)" name="username" placeholder="correo@ejemplo.com"
+                 class="w-full p-3 border border-[var(--line)] rounded-lg text-sm bg-white text-[var(--text)] outline-none focus:border-[var(--gold)]">
+
+          <label class="block text-[11px] font-bold tracking-wide text-[#6b6656] uppercase mt-3.5 mb-1.5">Contraseña</label>
+          <input type="password" [ngModel]="password()" (ngModelChange)="password.set($event)" name="password" placeholder="••••••••"
+                 class="w-full p-3 border border-[var(--line)] rounded-lg text-sm bg-white text-[var(--text)] outline-none focus:border-[var(--gold)]">
+
+          <div class="bg-[#f2ead3] border border-[#e7d9ae] rounded-[10px] p-4 mt-5">
+            <div class="text-[11px] font-bold tracking-wide text-[#8a6d1f] mb-2.5">DEMO — SELECCIONA TU ROL</div>
+            <div class="flex gap-2.5">
+              <button type="button" (click)="quickLogin('cliente')" class="flex-1 rounded-[9px] py-3 px-4 font-semibold text-sm bg-[var(--ink)] text-white">Entrar como Cliente</button>
+              <button type="button" (click)="quickLogin('admin')" class="flex-1 rounded-[9px] py-3 px-4 font-semibold text-sm bg-[var(--gold)] text-[#241c05]">Entrar como Admin</button>
+            </div>
+          </div>
+
+          <button type="submit" [disabled]="loading()" class="w-full rounded-[9px] py-3.5 px-4 font-semibold text-[15px] bg-[var(--ink)] text-white mt-4.5 disabled:opacity-50">
+            {{ loading() ? 'Ingresando...' : 'Iniciar sesión' }}
+          </button>
+
+          <div class="flex items-center gap-3 text-[var(--muted)] text-xs my-5 before:content-[''] before:flex-1 before:h-px before:bg-[var(--line)] after:content-[''] after:flex-1 after:h-px after:bg-[var(--line)]">o continúa con</div>
+
+          <button type="button" class="w-full rounded-[9px] py-3.5 px-4 font-semibold text-[15px] bg-white border border-[var(--line)] text-[var(--text)]">
+            <i class="pi pi-shield mr-2"></i>Iniciar sesión con Keycloak SSO
+          </button>
+        </form>
+      }
+    </div>
+  </div>
+</div>

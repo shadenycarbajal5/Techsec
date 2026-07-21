@@ -1,0 +1,22 @@
+<!-- src/app/page/admin/technician/technician-insert/technician-insert.html -->
+<section class="max-w-xl mx-auto space-y-6">
+  <h1 class="text-2xl font-extrabold" style="color:var(--text)">Nuevo técnico</h1>
+
+  <div class="panel space-y-4">
+    <label class="block text-xs font-bold tracking-wider uppercase" style="color:var(--muted)">Nombre completo
+      <input [ngModel]="name()" (ngModelChange)="name.set($event)" class="mt-2 w-full rounded-lg p-3 text-sm bg-white" style="border:1px solid var(--line); color:var(--text)">
+    </label>
+    <label class="block text-xs font-bold tracking-wider uppercase" style="color:var(--muted)">Documento
+      <input [ngModel]="document()" (ngModelChange)="document.set($event)" class="mt-2 w-full rounded-lg p-3 text-sm bg-white" style="border:1px solid var(--line); color:var(--text)">
+    </label>
+    <label class="block text-xs font-bold tracking-wider uppercase" style="color:var(--muted)">Teléfono
+      <input [ngModel]="phone()" (ngModelChange)="phone.set($event)" class="mt-2 w-full rounded-lg p-3 text-sm bg-white" style="border:1px solid var(--line); color:var(--text)">
+    </label>
+    <label class="block text-xs font-bold tracking-wider uppercase" style="color:var(--muted)">Especialidad
+      <input [ngModel]="specialty()" (ngModelChange)="specialty.set($event)" class="mt-2 w-full rounded-lg p-3 text-sm bg-white" style="border:1px solid var(--line); color:var(--text)">
+    </label>
+    <button (click)="submit()" [disabled]="saving()" class="w-full rounded-lg py-3 text-sm font-extrabold disabled:opacity-50" style="background:var(--gold); color:#241c05">
+      {{ saving() ? 'Guardando...' : 'Guardar técnico' }}
+    </button>
+  </div>
+</section>

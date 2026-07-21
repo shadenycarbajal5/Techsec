@@ -1,0 +1,29 @@
+<!-- src/app/page/admin/technician/technician-list/technician-list.html -->
+<section class="max-w-5xl mx-auto space-y-6">
+  <div class="flex justify-between items-center">
+    <h1 class="text-2xl font-extrabold" style="color:var(--text)">Técnicos</h1>
+    <a routerLink="/admin/technician/technician-insert" class="rounded-lg px-4 py-2.5 text-sm font-bold" style="background:var(--gold); color:#241c05">
+      <i class="pi pi-plus mr-2"></i>Nuevo técnico
+    </a>
+  </div>
+
+  @if (loading()) {
+    <p style="color:var(--muted)">Cargando...</p>
+  } @else {
+    <table>
+      <thead><tr><th>Nombre</th><th>Documento / Teléfono</th><th>Especialidad</th><th>Estado</th></tr></thead>
+      <tbody>
+        @for (t of technicians(); track t.id) {
+          <tr>
+            <td class="font-semibold" style="color:var(--text)">{{ t.name }}</td>
+            <td class="text-xs" style="color:var(--muted)">{{ t.document }} · {{ t.phone }}</td>
+            <td>{{ t.specialty || 'Sin especialidad' }}</td>
+            <td><span class="pill" [class.pill-green]="t.active" [class.pill-red]="!t.active">{{ t.active ? 'Activo' : 'Inactivo' }}</span></td>
+          </tr>
+        } @empty {
+          <tr><td colspan="4" class="p-6 text-center" style="color:var(--muted)">No hay técnicos registrados.</td></tr>
+        }
+      </tbody>
+    </table>
+  }
+</section>

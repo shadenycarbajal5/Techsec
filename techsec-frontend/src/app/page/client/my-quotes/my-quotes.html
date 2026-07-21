@@ -1,0 +1,29 @@
+<!-- src/app/page/client/my-quotes/my-quotes.html -->
+<section class="max-w-5xl mx-auto space-y-6">
+  <h1 class="text-2xl font-extrabold" style="color:var(--text)">Mis Cotizaciones</h1>
+  <p class="text-sm -mt-4" style="color:var(--muted)">Historial de solicitudes de cotización</p>
+
+  @if (loading()) {
+    <p style="color:var(--muted)">Cargando...</p>
+  } @else if (!quotes().length) {
+    <div class="card p-10 text-center" style="color:var(--muted)">No tienes cotizaciones registradas.</div>
+  } @else {
+    <table>
+      <thead><tr><th>Código</th><th>Fecha</th><th>Total</th><th>Productos</th></tr></thead>
+      <tbody>
+        @for (q of quotes(); track q.id) {
+          <tr>
+            <td><b style="color:var(--gold-dark)">COT-{{ q.id }}</b></td>
+            <td>{{ q.createdAt | date:'dd/MM/yyyy' }}</td>
+            <td class="font-bold">S/ {{ q.total.toFixed(2) }}</td>
+            <td style="color:var(--muted)" class="text-xs">
+              @for (d of q.details; track d.id) {
+                <div>{{ d.product.name }} × {{ d.quantity }}</div>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</section>

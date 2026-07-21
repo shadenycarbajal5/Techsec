@@ -1,0 +1,27 @@
+<!-- src/app/page/admin/appointment-agenda/appointment-agenda.html -->
+<section class="max-w-6xl mx-auto space-y-6">
+  <h1 class="text-2xl font-extrabold" style="color:var(--text)">Agenda de Citas</h1>
+  <p class="text-sm -mt-4" style="color:var(--muted)">Todas las citas registradas por los clientes</p>
+
+  @if (loading()) {
+    <p style="color:var(--muted)">Cargando...</p>
+  } @else if (!appointments().length) {
+    <div class="card p-10 text-center" style="color:var(--muted)">No hay citas registradas.</div>
+  } @else {
+    <table>
+      <thead><tr><th>Fecha</th><th>Servicio</th><th>Cliente</th><th>Técnico</th><th>Estado</th></tr></thead>
+      <tbody>
+        @for (a of appointments(); track a.id) {
+          <tr>
+            <td>{{ a.date | date:'dd/MM/yyyy' }} · {{ a.timeSlot === 'MANANA' ? 'Mañana' : 'Tarde' }}</td>
+            <td>{{ a.serviceType }}</td>
+            <td>{{ a.client?.name }}</td>
+            <td>{{ a.technician?.name || 'Por asignar' }}</td>
+            <td><span class="pill pill-blue">{{ a.currentStatus }}</span></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    <!-- NOTA: falta endpoint PATCH para asignar técnico / cambiar estado. -->
+  }
+</section>

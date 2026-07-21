@@ -1,0 +1,33 @@
+<!-- src/app/page/admin/order-management/order-management.html -->
+<section class="max-w-6xl mx-auto space-y-6">
+  <h1 class="text-2xl font-extrabold" style="color:var(--text)">Pedidos</h1>
+
+  @if (loading()) {
+    <p style="color:var(--muted)">Cargando...</p>
+  } @else {
+    <table>
+      <thead><tr><th>Pedido</th><th>Cliente</th><th>Fecha</th><th class="text-right">Total</th><th>Estado</th></tr></thead>
+      <tbody>
+        @for (o of orders(); track o.id) {
+          <tr>
+            <td><b style="color:var(--gold-dark)">PED-{{ o.id }}</b></td>
+            <td>{{ o.client?.name }}</td>
+            <td>{{ o.createdAt | date:'dd/MM/yyyy' }}</td>
+            <td class="text-right font-bold">S/ {{ o.total.toFixed(2) }}</td>
+            <td>
+              <span class="pill"
+                    [class.pill-green]="o.currentStatus === 'LISTO_RECOJO'"
+                    [class.pill-blue]="o.currentStatus === 'PREPARANDO_ALMACEN'"
+                    [class.pill-amber]="o.currentStatus === 'RECIBIDO'">
+                {{ o.currentStatus }}
+              </span>
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="5" class="p-6 text-center" style="color:var(--muted)">No hay pedidos registrados.</td></tr>
+        }
+      </tbody>
+    </table>
+    <!-- NOTA: falta endpoint PATCH para cambiar el estado del pedido. -->
+  }
+</section>

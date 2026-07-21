@@ -1,0 +1,29 @@
+<!-- src/app/page/client/profile/profile.html -->
+<h2 class="text-2xl font-extrabold mb-1" style="color:var(--text)">Mi Perfil</h2>
+<p class="text-sm mb-6" style="color:var(--muted)">Gestiona tu información de contacto y facturación.</p>
+
+<div class="panel" style="max-width:480px;">
+  <label class="field-label" style="display:block;font-size:11px;letter-spacing:.6px;font-weight:700;color:#6b6656;margin:0 0 6px;">NOMBRE</label>
+  <input type="text" [ngModel]="name()" (ngModelChange)="name.set($event)"
+         style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:9px;font-size:14px;background:#fff;color:var(--text);">
+
+  <label class="field-label" style="display:block;font-size:11px;letter-spacing:.6px;font-weight:700;color:#6b6656;margin:14px 0 6px;">DOCUMENTO (DNI)</label>
+  <input type="text" [ngModel]="document()" (ngModelChange)="document.set($event)"
+         style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:9px;font-size:14px;background:#fff;color:var(--text);">
+
+  <label class="field-label" style="display:block;font-size:11px;letter-spacing:.6px;font-weight:700;color:#6b6656;margin:14px 0 6px;">CORREO</label>
+  <input type="email" [ngModel]="username()" (ngModelChange)="username.set($event)"
+         style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:9px;font-size:14px;background:#fff;color:var(--text);">
+
+  <label class="field-label" style="display:block;font-size:11px;letter-spacing:.6px;font-weight:700;color:#6b6656;margin:14px 0 6px;">TELÉFONO</label>
+  <input type="text" [ngModel]="phone()" (ngModelChange)="phone.set($event)"
+         style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:9px;font-size:14px;background:#fff;color:var(--text);">
+
+  <label class="field-label" style="display:block;font-size:11px;letter-spacing:.6px;font-weight:700;color:#6b6656;margin:14px 0 6px;">DIRECCIÓN</label>
+  <input type="text" [ngModel]="address()" (ngModelChange)="address.set($event)"
+         style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:9px;font-size:14px;background:#fff;color:var(--text);">
+
+  <button (click)="save()" class="font-semibold rounded-lg mt-4.5 py-3.5 px-5" style="background:var(--ink);color:#fff;border:none;">
+    Guardar cambios
+  </button>
+</div>

@@ -1,0 +1,31 @@
+<!-- src/app/page/admin/category/category.html -->
+<section class="max-w-4xl mx-auto space-y-6">
+  <div class="flex justify-between items-center">
+    <h1 class="text-2xl font-extrabold" style="color:var(--text)">Categorías</h1>
+  </div>
+
+  <div class="card p-5 flex flex-col sm:flex-row gap-3">
+    <input [ngModel]="name()" (ngModelChange)="name.set($event)" placeholder="Nombre de la categoría"
+           class="flex-1 rounded-lg p-3 text-sm bg-white" style="border:1px solid var(--line); color:var(--text)">
+    <input [ngModel]="description()" (ngModelChange)="description.set($event)" placeholder="Descripción (opcional)"
+           class="flex-1 rounded-lg p-3 text-sm bg-white" style="border:1px solid var(--line); color:var(--text)">
+    <button (click)="save()" [disabled]="saving()" class="rounded-lg px-5 py-3 text-sm font-bold disabled:opacity-50" style="background:var(--gold); color:#241c05">
+      {{ saving() ? 'Guardando...' : 'Agregar' }}
+    </button>
+  </div>
+
+  @if (loading()) {
+    <p style="color:var(--muted)">Cargando...</p>
+  } @else {
+    <div class="card divide-y" style="border-color: var(--line)">
+      @for (c of categories(); track c.id) {
+        <div class="p-4 flex justify-between">
+          <span class="font-semibold" style="color:var(--text)">{{ c.name }}</span>
+          <span class="text-xs" style="color:var(--muted)">{{ c.description }}</span>
+        </div>
+      } @empty {
+        <p class="p-6 text-center" style="color:var(--muted)">No hay categorías registradas.</p>
+      }
+    </div>
+  }
+</section>

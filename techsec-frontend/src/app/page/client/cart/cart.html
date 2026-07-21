@@ -1,0 +1,43 @@
+<!-- src/app/page/client/cart/cart.html -->
+<section class="max-w-4xl mx-auto space-y-6">
+  <h1 class="text-2xl font-extrabold" style="color:var(--text)">Mi Cotización</h1>
+  <p class="text-sm -mt-4" style="color:var(--muted)">Productos agregados para solicitar cotización</p>
+
+  @if (!lines().length) {
+    <div class="card p-10 text-center">
+      <i class="pi pi-shopping-cart text-4xl" style="color:var(--line)"></i>
+      <p class="mt-4" style="color:var(--muted)">Tu carrito está vacío.</p>
+      <a routerLink="/client/catalog" class="mt-4 inline-block rounded-lg px-4 py-2 text-sm font-bold" style="background:var(--gold); color:#241c05">Ir al catálogo</a>
+    </div>
+  } @else {
+    <div class="card divide-y" style="border-color: var(--line)">
+      @for (line of lines(); track line.product.id) {
+        <div class="flex gap-4 p-5 items-center">
+          <span class="grid h-12 w-12 place-items-center rounded-xl" style="background:#faf9f5; color:var(--gold-dark)">
+            <i class="pi pi-box"></i>
+          </span>
+          <div class="flex-1">
+            <b style="color:var(--text)">{{ line.product.name }}</b>
+            <p class="text-xs" style="color:var(--muted)">S/ {{ line.product.price.toFixed(2) }} c/u</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button (click)="change(line.product.id, line.quantity - 1)" class="h-8 w-8 rounded" style="border:1px solid var(--line); color:var(--text)">−</button>
+            <b class="w-6 text-center" style="color:var(--text)">{{ line.quantity }}</b>
+            <button (click)="change(line.product.id, line.quantity + 1)" class="h-8 w-8 rounded" style="border:1px solid var(--line); color:var(--text)">+</button>
+          </div>
+          <span class="w-24 text-right font-bold" style="color:var(--gold-dark)">S/ {{ (line.product.price * line.quantity).toFixed(2) }}</span>
+          <button (click)="change(line.product.id, 0)" style="color:var(--red-text)"><i class="pi pi-trash"></i></button>
+        </div>
+      }
+    </div>
+
+    <div class="panel flex items-center justify-between">
+      <span style="color:var(--muted)">Total estimado</span>
+      <span class="text-2xl font-extrabold" style="color:var(--gold-dark)">S/ {{ total().toFixed(2) }}</span>
+    </div>
+
+    <button (click)="quote()" [disabled]="sending" class="w-full rounded-lg py-3 text-sm font-extrabold disabled:opacity-50" style="background:var(--gold); color:#241c05">
+      <i class="pi pi-file mr-2"></i>{{ sending ? 'Enviando...' : 'Solicitar cotización' }}
+    </button>
+  }
+</section>

@@ -1,0 +1,32 @@
+<!-- src/app/page/admin/product/product-list/product-list.html -->
+<section class="max-w-6xl mx-auto space-y-6">
+  <div class="flex justify-between items-center">
+    <h1 class="text-2xl font-extrabold" style="color:var(--text)">Inventario</h1>
+    <a routerLink="/admin/product/product-insert" class="rounded-lg px-4 py-2.5 text-sm font-bold" style="background:var(--gold); color:#241c05">
+      <i class="pi pi-plus mr-2"></i>Nuevo producto
+    </a>
+  </div>
+
+  @if (loading()) {
+    <p style="color:var(--muted)">Cargando...</p>
+  } @else {
+    <table>
+      <thead><tr><th>Producto</th><th>Categoría</th><th class="text-right">Precio</th><th class="text-right">Stock</th></tr></thead>
+      <tbody>
+        @for (p of products(); track p.id) {
+          <tr>
+            <td class="font-semibold" style="color:var(--text)">{{ p.name }}</td>
+            <td>{{ p.category?.name || '—' }}</td>
+            <td class="text-right font-bold" style="color:var(--gold-dark)">S/ {{ p.price.toFixed(2) }}</td>
+            <td class="text-right">
+              <span class="pill" [class.pill-red]="p.stock <= p.minStockAlert" [class.pill-green]="p.stock > p.minStockAlert">{{ p.stock }}</span>
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="4" class="p-6 text-center" style="color:var(--muted)">No hay productos registrados.</td></tr>
+        }
+      </tbody>
+    </table>
+    <!-- NOTA: falta endpoint para editar/eliminar producto. -->
+  }
+</section>
