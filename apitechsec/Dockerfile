@@ -2,7 +2,7 @@
 FROM maven:3.9-eclipse-temurin-17 AS build
 WORKDIR /app
 COPY . .
-RUN ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests
 
 # Paso 2: Ejecutar la aplicación con Java 17
 FROM eclipse-temurin:17-jre
