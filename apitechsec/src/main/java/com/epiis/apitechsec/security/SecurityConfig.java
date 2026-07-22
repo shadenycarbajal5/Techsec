@@ -38,7 +38,7 @@ public class SecurityConfig {
 			.csrf(csrf -> csrf.disable())
 			.sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(auth -> auth
-				// 1. Permitir explícitamente todas las peticiones Preflight (OPTIONS)
+				// PERMITIR TODAS LAS PETICIONES OPTIONS (PREFLIGHT)
 				.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 				.requestMatchers(
 					"/auth/**",
@@ -57,14 +57,14 @@ public class SecurityConfig {
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration config = new CorsConfiguration();
 		
-		// 2. Permitir el origen local Y el dominio de Render (o "*" para desarrollo)
-		config.setAllowedOriginPatterns(List.of(
+		// 1. Agrega aquí las URLs EXACTAS de tus entornos
+		config.setAllowedOrigins(List.of(
 			"http://localhost:4200",
-			"https://*.onrender.com" // 👈 Esto permite cualquier subdominio de Render
+			"https://techsec-frontend.onrender.com" // 👈 Pon AQUÍ la URL exacta de tu frontend en Render
 		));
 		
 		config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-		config.setAllowedHeaders(List.of("*"));
+		config.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin"));
 		config.setExposedHeaders(List.of("Authorization"));
 		config.setAllowCredentials(true);
 
