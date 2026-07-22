@@ -1,4 +1,4 @@
 export const environment = {
-  production: false,
-  urlBase: 'http://localhost:8080/api'
+  production: true,
+  urlBase: 'https://apitechsec-backend.onrender.com/api' // 👈 Asegúrate de usar TU URL exacta de Render
 };
